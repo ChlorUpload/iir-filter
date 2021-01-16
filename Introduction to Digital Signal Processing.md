@@ -208,3 +208,58 @@ $$
 
 ### 이산 푸리에 변환
 
+이산 푸리에 변환은 연속 푸리에 변환을 영차 홀드 근사를 이용해서 리만 근사한 것으로 다음과 같이 계산한다.
+$$
+X[k] = \sum _{n=0} ^{N-1} x[n] e ^ { - j \cdot 2\pi\cdot \frac{2\pi}{N} n k}
+$$
+
+### 주파수 응답 함수
+
+임펄스 응답 $h[n]$을 갖는 선형 시불변 이산 시스템은 다음과 같이 나타낼 수 있었다.
+$$
+y[n] = x[n]*h[n] = \sum _{k=-\infty} ^{\infty} h[k]x[n-k]
+$$
+여기에 $x[n]$을 복소 지수 함수라고 생각하면 선형 시불변 시스템의 출력은 다음과 같이 표현된다.
+$$
+x[n] = e^{j\omega n}
+$$
+
+$$
+y[n] = \sum _{k=-\infty} ^{\infty} e^{j\omega (n-k)} = \left ( \sum _{k=-\infty} ^{\infty} h[k]e^{-j\omega k} \right ) e^{j\omega n} 
+$$
+
+여기서 괄호로 묶은 부분은 임펄스 응답 $h[k]$에 대한 푸리에 변환이다. 따라서 이 계수를 $H(e^{j\omega})$로 대체하면 다음과 같이 다시 쓸 수 있다.
+$$
+y[n] = H(e^{j\omega}) e^{j\omega n}
+$$
+이 계수는 $n$에 대하여 독립이므로 이는 복소 상수로 볼 수 있고, 이렇게 입력의 상수배가 되면서 출력을 만들어낼 수 있는 함수를 그 함수의 **고유 함수**(eigen function)라고 한다. 따라서 복소 지수 함수 $e^{j\omega n}$은 LTI 시스템의 고유 함수가 된다. 
+
+이 때, $H(e^{j\omega})$ 를 **주파수 응답 함수**라고 한다.
+
+### 무한 임펄스 응답 저주파 패스 필터(IIR LPF: Infinite Impulse Response Low Pass Filter)
+
+주파수 대역에서 **이상적인 저주파 패스 필터**를 설계하면 다음과 같은 주파수 응답 함수를 생각할 수 있다.
+$$
+H(e^{j\omega}) = \begin{cases} 1 & (|\omega| < \omega_c)\\ 0 & otherwise \end{cases}
+$$
+이 함수의 푸리에 역변환인 임펄스 응답 $h[n]$은 다음과 같다. (이는 구형파 신호의 푸리에 변환이 $sinc$함수인 것과 푸리에 변환 결과에 한 번 더 푸리에 변환을 수행한 결과와 원본 신호 간의 관계를 따져 보면 알 수 있다.)
+$$
+h[n] =\frac{\sin(\omega_c n)}{\pi n}
+$$
+이 때, $w_c$는 $0<w_c < \pi$를 만족하도록 정규화되어 있기 때문에 $w_c =\pi f_c$에서 , 컷오프 주파수 $f_c$는 나이퀴스트 주파수 $f_s = \frac{N}{2}$에 대하여 컷오프 될 주파수 샘플인 $N_c$를 정하고 $f_c = \frac{N_c}{f_s}$ 으로 잡아야 한다.  따라서 실습에서는 임펄스 응답 $h_n$의 $w_c$를 다음과 같이 잡았다.
+$$
+w_c = \frac{2\pi N_c}{N}
+$$
+
+```python
+# IIR 임펄스 응답
+def h(n: int):
+
+    f_c = 600
+    w_c = 2*pi*f_c / SAMPLE_RATE
+
+    if n==0:
+        return w_c / pi
+    else:
+        return sin(w_c * n) / pi / n
+```
