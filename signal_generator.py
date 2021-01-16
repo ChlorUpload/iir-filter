@@ -1,4 +1,4 @@
-from math import pi, sin, lcm
+from math import pi, sin
 import matplotlib.pyplot as plt
 from audio import Audio
 from convert_to_pcm import convert_to_pcm
