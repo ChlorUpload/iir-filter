@@ -2,12 +2,13 @@ from math import pi, sin
 import matplotlib.pyplot as plt
 from audio import Audio
 from convert_to_pcm import convert_to_pcm
+from types_compat import List, Tuple
 
 class SignalGenerator:
     def __init__(self, sample_rate: int):
 
         # wave is tuple of amplitude, period_sample, phase_sample
-        self._waves: list[tuple[float, float, float]] = []
+        self._waves: List[Tuple[float, float, float]] = []
 
         # generation starting position. This value is maintained to be in the range [0, sample_rate)
         self._position = 0
@@ -39,7 +40,7 @@ class SignalGenerator:
                                    self._sample_rate * period_ms / 1000,
                                    self._sample_rate * phase_ms / 1000)
 
-    def generate(self, length: int) -> list[int]:
+    def generate(self, length: int) -> List[int]:
 
         ret = length * [0]
 
